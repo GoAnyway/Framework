@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoAnyway.Framework", "GoAnyway.Framework\GoAnyway.Framework.csproj", "{3495DD9E-EBF3-40F2-9A43-D74DEE32DFC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3495DD9E-EBF3-40F2-9A43-D74DEE32DFC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3495DD9E-EBF3-40F2-9A43-D74DEE32DFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3495DD9E-EBF3-40F2-9A43-D74DEE32DFC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3495DD9E-EBF3-40F2-9A43-D74DEE32DFC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67C99BDB-AE35-43E4-AFEF-13BD96CABFE5}
+	EndGlobalSection
+EndGlobal
