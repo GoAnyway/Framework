@@ -12,4 +12,8 @@
 	<RepositoryUrl>https://github.com/GoAnyway/Framework</RepositoryUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" />
+  </ItemGroup>
+
 </Project>

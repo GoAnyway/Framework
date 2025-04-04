@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <!-- When set to 'true', it enables the use of a central package version management file, typically 'Directory.Packages.props', to define package versions. This helps in maintaining consistent package versions across multiple projects in a solution. -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- When set to 'true', this property enables the pinning of transitive package versions. This means that the transitive (indirect) dependencies of a package will use the versions specified in the central package version management file, ensuring consistency in dependency versions across the solution. -->
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <!-- When set to 'false', it enforces the use of versions specified in the central package version management file, disallowing individual projects from specifying different versions for the same packages. -->
+    <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="JetBrains.Annotations" Version="[2024.3.0]" />
+  </ItemGroup>
+</Project>
