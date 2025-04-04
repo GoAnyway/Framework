@@ -1,22 +1,31 @@
-﻿namespace GoAnyway.Framework.Time;
+﻿using GoAnyway.Framework.Assertion;
+
+namespace GoAnyway.Framework.Time;
 
 public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
 {
+    private readonly DateTimeKind _kind;
+
     public int Month { get; }
     public int Year { get; }
 
-    public MonthOnly(int month, int year)
+    private MonthOnly(
+        int month, 
+        int year,
+        DateTimeKind kind)
     {
         Month = month;
         Year = year;
+        _kind = kind.ThrowIfNotDefined();
     }
 
     public static MonthOnly Current()
     {
         var now = DateTime.Now;
         return new(
-            now.Month,
-            now.Year
+            month: now.Month,
+            year: now.Year,
+            kind: DateTimeKind.Local
         );
     }
 
@@ -27,7 +36,8 @@ public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
 
         return new(
             month: month,
-            year: year
+            year: year,
+            kind: dateTime.Kind
         );
     }
 
@@ -93,10 +103,12 @@ public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
 
     public static implicit operator DateTime(MonthOnly month)
     {
-        return new(
+        var dateTime = new DateTime(
             year: month.Year, 
             month: month.Month, 
             day: 1
         );
+
+        return DateTime.SpecifyKind(dateTime, month._kind);
     }
 }
