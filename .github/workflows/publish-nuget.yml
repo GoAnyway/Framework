@@ -1,0 +1,60 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_PATH: src/src/GoAnyway.Framework/GoAnyway.Framework.csproj
+
+    steps:
+    - name: 🧾 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: 🛡 Check if tag is on master
+      run: |
+        TAG_COMMIT=$(git rev-list -n 1 $GITHUB_SHA)
+        MASTER_COMMIT=$(git rev-parse origin/master)
+
+        if [ "$TAG_COMMIT" != "$MASTER_COMMIT" ]; then
+          echo "❌ Tag is not pointing to latest commit on master"
+          exit 1
+        fi
+
+        echo "✅ Tag matches master"
+
+    - name: 🛠 Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 🔖 Extract version from Git tag
+      id: version
+      run: |
+        tag=${GITHUB_REF#refs/tags/v}
+        echo "PACKAGE_VERSION=$tag" >> $GITHUB_ENV
+        echo "✅ Using tag version: $tag"
+
+    - name: 📝 Update <Version> in .csproj
+      run: |
+        sed -i "s|<Version>.*</Version>|<Version>${{ env.PACKAGE_VERSION }}</Version>|" ${{ env.PROJECT_PATH }}
+        echo "✅ Updated version in .csproj to ${{ env.PACKAGE_VERSION }}"
+
+    - name: 🧼 Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: 🏗 Build
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+    - name: 📦 Pack with version from tag
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg
+
+    - name: 🚀 Push to NuGet.org
+      run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
