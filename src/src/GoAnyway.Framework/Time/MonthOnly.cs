@@ -21,12 +21,12 @@ public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
 
     public static MonthOnly Current()
     {
-        var now = DateTime.Now;
-        return new(
-            month: now.Month,
-            year: now.Year,
-            kind: DateTimeKind.Local
-        );
+        return FromDateTime(DateTime.Now);
+    }
+
+    public static MonthOnly CurrentUtc()
+    {
+        return FromDateTime(DateTime.UtcNow);
     }
 
     public static MonthOnly FromDateTime(DateTime dateTime)
