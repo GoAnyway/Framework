@@ -60,9 +60,10 @@ jobs:
         echo "✅ Updated version in .csproj to ${{ env.PACKAGE_VERSION }}"
 
   build:
-    name: 🧱 Build project
+    name: 🧱 Build and Pack
     runs-on: ubuntu-latest
     needs: [validate-tag, prepare]
+
     steps:
     - name: 🧾 Checkout code
       uses: actions/checkout@v4
@@ -75,15 +76,16 @@ jobs:
     - name: 🧼 Restore dependencies
       run: dotnet restore ${{ env.PROJECT_PATH }}
 
-    - name: 🏗 Build
+    - name: 🏗 Build project
       run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
-  pack:
-    name: 📦 Pack NuGet
+    - name: 📦 Pack NuGet package
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg
+
+  publish:
+    name: 🚀 Push to NuGet.org
     runs-on: ubuntu-latest
-    needs: [build, prepare]
-    outputs:
-      package_path: ${{ steps.pack.outputs.package_path }}
+    needs: build
     steps:
     - name: 🧾 Checkout code
       uses: actions/checkout@v4
@@ -93,16 +95,5 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: 📦 Pack with version from tag
-      id: pack
-      run: |
-        dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg
-        echo "package_path=./nupkg" >> $GITHUB_OUTPUT
-
-  publish:
-    name: 🚀 Push to NuGet.org
-    runs-on: ubuntu-latest
-    needs: [pack]
-    steps:
     - name: 📦 Push .nupkg to NuGet
       run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
