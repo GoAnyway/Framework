@@ -13,22 +13,22 @@ jobs:
     name: 🛡 Validate tag target
     runs-on: ubuntu-latest
     steps:
-    - name: 🧾 Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: 🔍 Check if tag is on latest master commit
-      run: |
-        TAG_COMMIT=$(git rev-list -n 1 $GITHUB_SHA)
-        MASTER_COMMIT=$(git rev-parse origin/master)
+      - name: 🔍 Check if tag is on latest master commit
+        run: |
+          TAG_COMMIT=$(git rev-list -n 1 $GITHUB_SHA)
+          MASTER_COMMIT=$(git rev-parse origin/master)
 
-        if [ "$TAG_COMMIT" != "$MASTER_COMMIT" ]; then
-          echo "❌ Tag is not pointing to latest commit on master"
-          exit 1
-        fi
+          if [ "$TAG_COMMIT" != "$MASTER_COMMIT" ]; then
+            echo "❌ Tag is not pointing to latest commit on master"
+            exit 1
+          fi
 
-        echo "✅ Tag matches master"
+          echo "✅ Tag matches master"
 
   prepare:
     name: ⚙️ Setup and extract version
@@ -36,28 +36,28 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - name: 🧾 Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: 🛠 Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: 🛠 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: 🔖 Extract version from Git tag
-      id: version
-      run: |
-        tag=${GITHUB_REF#refs/tags/v}
-        echo "version=$tag" >> $GITHUB_OUTPUT
-        echo "PACKAGE_VERSION=$tag" >> $GITHUB_ENV
-        echo "✅ Using tag version: $tag"
+      - name: 🔖 Extract version from Git tag
+        id: version
+        run: |
+          tag=${GITHUB_REF#refs/tags/v}
+          echo "version=$tag" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$tag" >> $GITHUB_ENV
+          echo "✅ Using tag version: $tag"
 
-    - name: 📝 Update <Version> in .csproj
-      run: |
-        sed -i "s|<Version>.*</Version>|<Version>${{ env.PACKAGE_VERSION }}</Version>|" ${{ env.PROJECT_PATH }}
-        echo "✅ Updated version in .csproj to ${{ env.PACKAGE_VERSION }}"
+      - name: 📝 Update <Version> in .csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ env.PACKAGE_VERSION }}</Version>|" ${{ env.PROJECT_PATH }}
+          echo "✅ Updated version in .csproj to ${{ env.PACKAGE_VERSION }}"
 
   build:
     name: 🧱 Build and Pack
@@ -65,28 +65,28 @@ jobs:
     needs: [validate-tag, prepare]
 
     steps:
-    - name: 🧾 Checkout code
-      uses: actions/checkout@v4
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🛠 Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: 🛠 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: 🧼 Restore dependencies
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      - name: 🧼 Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
-    - name: 🏗 Build project
-      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      - name: 🏗 Build project
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
-    - name: 📦 Pack NuGet package
-      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg
+      - name: 📦 Pack NuGet package
+        run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg
 
-    - name: 💾 Upload NuGet package
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-package
-        path: ./nupkg/*.nupkg
+      - name: 💾 Upload NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./nupkg
 
   publish:
     name: 🚀 Push to NuGet.org
@@ -94,15 +94,16 @@ jobs:
     needs: build
 
     steps:
-    - name: 📥 Download NuGet package
-      uses: actions/download-artifact@v4
-      with:
-        name: nuget-package
+      - name: 📥 Download NuGet package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: ./nupkg
 
-    - name: 🛠 Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: 🛠 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: 🚀 Push .nupkg to NuGet
-      run: dotnet nuget push nuget-package/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+      - name: 🚀 Push .nupkg to NuGet
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
