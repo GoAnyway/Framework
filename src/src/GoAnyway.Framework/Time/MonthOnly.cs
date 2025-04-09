@@ -1,4 +1,7 @@
 ﻿using GoAnyway.Framework.Assertion;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace GoAnyway.Framework.Time;
 
@@ -49,7 +52,28 @@ public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
 
     public override string ToString()
     {
-        return ((DateTime)this).ToString("MMMM yyyy");
+        DateTime dateTime = this;
+        return dateTime.ToString(CultureInfo.CurrentCulture);
+    }
+
+    public string ToString([StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format)
+    {
+        DateTime dateTime = this;
+        return dateTime.ToString(format);
+    }
+
+    public string ToString(IFormatProvider? provider)
+    {
+        DateTime dateTime = this;
+        return dateTime.ToString(provider);
+    }
+
+    public string ToString(
+        [StringSyntax(StringSyntaxAttribute.DateTimeFormat)] string? format, 
+        IFormatProvider? provider)
+    {
+        DateTime dateTime = this;
+        return dateTime.ToString(format, provider);
     }
 
     public bool Equals(MonthOnly other)
