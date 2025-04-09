@@ -29,6 +29,12 @@ public readonly struct MonthOnly : IEquatable<MonthOnly>, IComparable<MonthOnly>
         return FromDateTime(DateTime.UtcNow);
     }
 
+    public MonthOnly Next()
+    {
+        DateTime dateTime = this;
+        return FromDateTime(dateTime.AddMonths(1));
+    }
+
     public static MonthOnly FromDateTime(DateTime dateTime)
     {
         var month = dateTime.Month;
