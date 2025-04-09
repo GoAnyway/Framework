@@ -1,7 +1,6 @@
 ﻿using GoAnyway.Framework.Assertion;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.Serialization;
 
 namespace GoAnyway.Framework.Time;
 
