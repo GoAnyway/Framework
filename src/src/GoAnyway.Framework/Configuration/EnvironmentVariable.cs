@@ -13,6 +13,29 @@ public static class EnvironmentVariable
         return converter(Get(name));
     }
 
+    public static T Get<T>(
+        string name,
+        Func<string, T> converter,
+        T defaultValue)
+    {
+        converter.ThrowIfNull();
+        return Find(name, converter) ?? defaultValue;
+    }
+
+    public static string Get(string name)
+    {
+        return Find(name) ?? 
+               throw new InvalidOperationException($"Environment variable '{name}' is not set.");
+    }
+
+    public static string Get(
+        string name, 
+        string defaultValue)
+    {
+        name.ThrowIfNullOrEmpty();
+        return Find(name) ?? defaultValue;
+    }
+
     public static T? Find<T>(
         string name,
         Func<string, T> converter)
@@ -24,12 +47,6 @@ public static class EnvironmentVariable
             return default;
 
         return converter(value);
-    }
-
-    public static string Get(string name)
-    {
-        return Find(name) ?? 
-               throw new InvalidOperationException($"Environment variable '{name}' is not set.");
     }
 
     public static string? Find(string name)
