@@ -16,4 +16,8 @@
     <PackageReference Include="JetBrains.Annotations" />
   </ItemGroup>
 
+  <ItemGroup>
+  	<InternalsVisibleTo Include="GoAnyway.Framework.Tests" />
+  </ItemGroup>
+
 </Project>
