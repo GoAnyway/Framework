@@ -11,6 +11,9 @@ jobs:
 
     env:
       PROJECT_PATH: src/src/GoAnyway.Framework/GoAnyway.Framework.csproj
+      TEST_PROJECT_PATH: src/test/GoAnyway.Framework.Tests/GoAnyway.Framework.Tests.csproj
+      TEST_RESULTS_DIR: ./TestResults
+      REPORT_DIR: ./TestReport
 
     steps:
     - name: 🧾 Checkout code
@@ -22,10 +25,32 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: 🔧 Restore
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      run: dotnet restore ${{ env.PROJECT_PATH }} ${{ env.TEST_PROJECT_PATH }}
 
     - name: 🧪 Build
-      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      run: dotnet build ${{ env.PROJECT_PATH }} ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-restore
 
     - name: ✅ Run tests
-      run: echo "🔍 No tests defined yet"
+      run: |
+        mkdir ${{ env.TEST_RESULTS_DIR }}
+        dotnet test ${{ env.TEST_PROJECT_PATH }} \
+          --no-build --configuration Release \
+          --logger "trx;LogFileName=test-results.trx" \
+          --results-directory ${{ env.TEST_RESULTS_DIR }}
+
+    - name: 📦 Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: 🧾 Generate HTML test report
+      run: |
+        reportgenerator \
+          -reports:${{ env.TEST_RESULTS_DIR }}/*.trx \
+          -targetdir:${{ env.REPORT_DIR }} \
+          -reporttypes:Html
+
+    - name: 📤 Upload HTML Test Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-test-report
+        path: ${{ env.REPORT_DIR }}
