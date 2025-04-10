@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using System.Text.RegularExpressions;
 using GoAnyway.Framework.Assertion;
 using GoAnyway.Framework.Memory;
 
@@ -8,12 +7,6 @@ namespace GoAnyway.Framework.Extensions;
 
 public static partial class StringExtensions
 {
-    [GeneratedRegex("^[a-z0-9_]+$", RegexOptions.Compiled)]
-    private static partial Regex IsSnakeCaseRegex();
-
-    [GeneratedRegex("([a-z0-9])([A-Z])", RegexOptions.Compiled)]
-    private static partial Regex CamelToSnakeCaseRegex();
-
     public static bool IsSpecified([NotNullWhen(true)] this string? source)
     {
         return !string.IsNullOrEmpty(source);
@@ -36,21 +29,50 @@ public static partial class StringExtensions
         return new(buffer);
     }
 
-    public static bool IsSnakeCase(this string source)
+    public static bool IsSnakeCase(string input)
     {
-        source.ThrowIfNullOrEmpty();
+        if (input.IsNotSpecified())
+            return false;
 
-        return IsSnakeCaseRegex().IsMatch(source);
+        if (input.StartsWith('_') || 
+            input.EndsWith('_') ||
+            input.Contains("__"))
+        {
+            return false;
+        }
+
+        return input.All(c => char.IsLower(c) || 
+                              char.IsDigit(c) || 
+                              c == '_');
     }
 
-    public static string ToSnakeCase(this string source)
+    public static string ToSnakeCase(string input)
     {
-        source.ThrowIfNullOrEmpty();
+        if (input.IsNotSpecified())
+            return input;
 
-        const string format = "$1_$2";
+        var sb = new StringBuilder();
 
-        return CamelToSnakeCaseRegex()
-            .Replace(source, format)
-            .ToLower();
+        for (var i = 0; i < input.Length; i++)
+        {
+            var c = input[i];
+
+            if (char.IsUpper(c))
+            {
+                var isPrevLower = i > 0 && char.IsLower(input[i - 1]);
+                var isNextLower = i + 1 < input.Length && char.IsLower(input[i + 1]);
+
+                if (i > 0 && (isPrevLower || isNextLower))
+                    sb.Append('_');
+
+                sb.Append(char.ToLower(c));
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString();
     }
 }
