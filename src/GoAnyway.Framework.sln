@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoAnyway.Framework", "src\G
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3B0C561E-8D61-4BF0-B7AE-DBE657FB2874}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoAnyway.Framework.Tests", "test\GoAnyway.Framework.Tests\GoAnyway.Framework.Tests.csproj", "{C1FDFB3D-F036-4C37-9989-03205875429C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +21,17 @@ Global
 		{781E9512-597B-5610-B5EE-7B9F383ED4D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{781E9512-597B-5610-B5EE-7B9F383ED4D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{781E9512-597B-5610-B5EE-7B9F383ED4D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1FDFB3D-F036-4C37-9989-03205875429C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FDFB3D-F036-4C37-9989-03205875429C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FDFB3D-F036-4C37-9989-03205875429C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FDFB3D-F036-4C37-9989-03205875429C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{781E9512-597B-5610-B5EE-7B9F383ED4D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C1FDFB3D-F036-4C37-9989-03205875429C} = {3B0C561E-8D61-4BF0-B7AE-DBE657FB2874}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67C99BDB-AE35-43E4-AFEF-13BD96CABFE5}
