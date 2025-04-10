@@ -29,7 +29,7 @@ public static partial class StringExtensions
         return new(buffer);
     }
 
-    public static bool IsSnakeCase(string input)
+    public static bool IsSnakeCase(this string input)
     {
         if (input.IsNotSpecified())
             return false;
@@ -46,7 +46,7 @@ public static partial class StringExtensions
                               c == '_');
     }
 
-    public static string ToSnakeCase(string input)
+    public static string ToSnakeCase(this string input)
     {
         if (input.IsNotSpecified())
             return input;
