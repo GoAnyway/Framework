@@ -1,5 +1,3 @@
-
-
 using FluentAssertions;
 using GoAnyway.Framework.Configuration;
 
@@ -95,9 +93,9 @@ public class EnvironmentVariableTests
     {
         Environment.SetEnvironmentVariable(VariableName, null);
 
-        var result = EnvironmentVariable.Find(VariableName, int.Parse);
+        var result = EnvironmentVariable.Find<int?>(VariableName, v => int.Parse(v));
 
-        result.Should().Be(null);
+        result.Should().BeNull();
     }
 
     [Fact]

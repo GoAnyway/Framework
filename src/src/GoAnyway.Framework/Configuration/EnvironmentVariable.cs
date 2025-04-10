@@ -19,7 +19,12 @@ public static class EnvironmentVariable
         T defaultValue)
     {
         converter.ThrowIfNull();
-        return Find(name, converter) ?? defaultValue;
+
+        var value = Find(name);
+        if (value.IsNotSpecified())
+            return defaultValue;
+
+        return converter(value);
     }
 
     public static string Get(string name)
