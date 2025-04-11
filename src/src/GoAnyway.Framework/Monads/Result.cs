@@ -5,9 +5,11 @@ namespace GoAnyway.Framework.Monads;
 public readonly record struct Result<T>
 {
     [MemberNotNullWhen(true, nameof(Value))]
+    [MemberNotNullWhen(false, nameof(Error))]
     public bool IsSuccess { get; }
 
     [MemberNotNullWhen(true, nameof(Error))]
+    [MemberNotNullWhen(false, nameof(Value))]
     public bool IsFailure => !IsSuccess;
 
     public T? Value { get; }
@@ -44,7 +46,7 @@ public readonly record struct Result<T>
 
     public override string ToString()
     {
-        return IsSuccess ? $"Success({Value})" : $"Failure({Error})";
+        return IsSuccess ? $"Success({Value})" : $"Failure({Error.Value.Message})";
     }
 
     public static implicit operator Result<T>(T value)
