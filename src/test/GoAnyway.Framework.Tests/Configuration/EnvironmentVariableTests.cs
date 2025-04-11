@@ -1,7 +1,7 @@
 using FluentAssertions;
 using GoAnyway.Framework.Configuration;
 
-namespace GoAnyway.Framework.Tests;
+namespace GoAnyway.Framework.Tests.Configuration;
 
 public class EnvironmentVariableTests
 {
